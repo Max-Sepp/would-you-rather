@@ -94,7 +94,7 @@ function Home(props: { leftOption: string, rightOption: string, leftPercentage: 
   return (
     <>
       <h1 className="text-slate-900 dark:text-white text-center p-5 text-5xl">Would You Rather?</h1>
-      <div className="flex flex-row justify-center gap-5">
+      <div className="flex flex-col md:flex-row justify-center items-center gap-5">
         <div onClick={submitLeftOption} className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 h-96 w-96 text-center flex flex-col items-center justify-center gap-4">
           <div className="text-xl">
           {props.leftOption}
