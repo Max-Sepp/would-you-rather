@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react"
 
@@ -13,6 +14,9 @@ function Home() {
 
   return (
     <>
+      <Head>
+        <title>Would you rather?</title>
+      </Head>
       <h1 className="text-slate-900 dark:text-white text-center p-5 text-5xl">Would You Rather?</h1>
       <div className="flex flex-col md:flex-row justify-center items-center gap-5">
         <Link href={`/${encodeURIComponent(nextQuestion)}`}>
