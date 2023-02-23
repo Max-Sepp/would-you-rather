@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useEffect, useState } from "react"
+import { useEffect, useState, MouseEvent } from "react"
 import { prisma } from "../services/prisma";
 
 export async function getStaticProps(context: any) {
@@ -56,7 +56,7 @@ function Home(props: { leftOption: string, rightOption: string, leftPercentage: 
     setAnswered(false)
   }, [props.currentQuestion])
 
-  async function submitLeftOption(e: any) {
+  async function submitLeftOption(e: MouseEvent) {
     e.preventDefault();
     if (!answered) {
       setAnswered(true);
@@ -74,7 +74,7 @@ function Home(props: { leftOption: string, rightOption: string, leftPercentage: 
     }
   }
 
-  async function submitRightOption(e: any) {
+  async function submitRightOption(e: MouseEvent) {
     e.preventDefault();
     if (!answered){
       setAnswered(true);
@@ -103,7 +103,7 @@ function Home(props: { leftOption: string, rightOption: string, leftPercentage: 
           <div className="text-xl">
           {props.leftOption}
           </div>
-          <div className={answered ? "" : "hidden"}>
+          <div className={`transition-all duration-300 ${answered ? "opacity-100" : "opacity-0"}`}>
           {props.leftPercentage} %
           </div>
         </div>
@@ -112,7 +112,7 @@ function Home(props: { leftOption: string, rightOption: string, leftPercentage: 
           <div className="text-xl">
           {props.rightOption}
           </div>
-          <div className={answered ? "duration-700" : "hidden"}>
+          <div className={`transition-all duration-300 ${answered ? "opacity-100" : "opacity-0"}`}>
           {props.rightPercentage} %
           </div>
         </div>
