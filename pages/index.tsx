@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 function Home() {
    
@@ -27,6 +27,7 @@ function Home() {
           <div className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 h-96 w-96 text-center flex items-center justify-center">Try a would you rather?</div>
         </Link>
       </div>
+      <h3 className="text-slate-900 dark:text-white text-center p-5 text-2xl">By Max Smith</h3>
     </>
   )
 }
