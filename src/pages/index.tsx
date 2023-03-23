@@ -9,6 +9,8 @@ import { api } from "~/utils/api";
 const Home: NextPage = () => {
   const [nextQuestion, setNextQuestion] = useState(1);
 
+
+  // sets which question to go to
   useEffect(() => {
     const maxNumberQuestions = 5
 
