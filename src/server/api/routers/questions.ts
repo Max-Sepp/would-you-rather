@@ -6,6 +6,23 @@ import {
 } from "~/server/api/trpc";
 
 export const QuestionsRouter = createTRPCRouter({
+  numQuestions: publicProcedure
+    .query(async ({ctx}) => {
+      const numQuestions = await ctx.prisma.questionBank.findUnique({
+        where: {
+          id: 'clfrrbj1v0002qrok858k05pb' // id for the only starting question bank
+        }
+      })
+
+      if (!numQuestions) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Question bank not found'
+        })
+      }
+
+      return numQuestions.numQuestions;
+    }),
   getByID: publicProcedure
     .input(z.object({id: z.number()}))
     .query(async ({input, ctx}) => {
@@ -34,4 +51,42 @@ export const QuestionsRouter = createTRPCRouter({
 
       return question
     }),
+
+
+  percentageUpdate: publicProcedure
+    .input(z.object({
+      pageId: z.number(),
+      leftClicked: z.boolean() // call the procedure if this is false then right option is clicked
+    }))
+    .mutation(async ({input, ctx}) => {
+
+      if (input.pageId < 0) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: 'Not allowed to access question which is not active'
+        })
+      }
+  
+      const leftChosenIncrease = (input.leftClicked) ? 1 : 0;
+  
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const updatedQuestion = await ctx.prisma.question.updateMany({
+          where: {
+            questionPageId: input.pageId
+          },
+          data: {
+            leftChosen: {increment: leftChosenIncrease},
+            totalChosen: {increment: 1}
+          },
+        });
+      } catch(error) {
+        throw new TRPCError({
+          code:'NOT_FOUND',
+          message:'error'
+        })
+      }
+
+      return {message:"Success"};
+    })
 });

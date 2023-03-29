@@ -15,13 +15,18 @@ datasource db {
 }
 
 model Question {
-  id             Int    @id @default(autoincrement())
+  id             String @id @default(cuid())
   // if -1 it is not active otherwise it has been assigned a value and this is the value for the page id
   questionPageId Int    @default(-1)
   leftQuestion   String
   rightQuestion  String
   leftChosen     Int    @default(1)
   totalChosen    Int    @default(2)
+}
+
+model QuestionBank {
+  id           String @id @default(cuid())
+  numQuestions Int
 }
 
 // Necessary for Next auth

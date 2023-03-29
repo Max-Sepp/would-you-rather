@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { type NextPage } from "next/types";
-import { useEffect, useState, type FunctionComponent, type MouseEvent } from "react";
+import { useState, type FunctionComponent, type MouseEvent } from "react";
 import { api } from "~/utils/api";
 
 type QuestionProps = {
@@ -11,31 +11,32 @@ type QuestionProps = {
   rightOption: string,
   leftPercentage: number,
   rightPercentage: number,
-  currentQuestion: number
+  pageId: number
 }
 
-const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, leftPercentage, rightPercentage, currentQuestion}) => {
+const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, leftPercentage, rightPercentage, pageId}) => {
 
-  const [nextQuestion, setNextQuestion] = useState(1);
+  const questionMutation = api.questions.percentageUpdate.useMutation();
   const [answered, setAnswered] = useState(false)
 
-  useEffect(() => {
-    const maxNumberQuestions = 5
-    let output: number = Math.floor(Math.random() * maxNumberQuestions) + 1
+  const numQuestions = api.questions.numQuestions.useQuery();
 
-    while (output == currentQuestion) {
-      output = Math.floor(Math.random() * maxNumberQuestions) + 1
-    }
-
-    setNextQuestion(output);
-    setAnswered(false)
-  }, [currentQuestion])
+  if (numQuestions.error || typeof numQuestions.data === "undefined") {
+    return <NextError 
+      statusCode={404}
+      message={'The server could not find any more questions'}
+    />
+  }
+  const nextQuestion = Math.floor(Math.random() * numQuestions.data) + 1;
 
   function submitLeftOption(e: MouseEvent) {
     e.preventDefault();
     if (!answered) {
       setAnswered(true);
-      // TODO add trpc mutation code
+      questionMutation.mutate({
+        pageId,
+        leftClicked: true
+      })
     }
   }
 
@@ -43,7 +44,10 @@ const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, le
     e.preventDefault();
     if (!answered){
       setAnswered(true);
-      // TODO add trpc mutation code
+      questionMutation.mutate({
+        pageId,
+        leftClicked: false
+      })
     }
   }
 
@@ -117,7 +121,7 @@ const QuestionPage: NextPage = () => {
       rightOption={data.rightQuestion} 
       leftPercentage={leftPercentage}
       rightPercentage={rightPercentage}
-      currentQuestion={id}
+      pageId={id}
     />
   )
 }

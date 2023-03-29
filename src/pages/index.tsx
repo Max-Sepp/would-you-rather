@@ -1,21 +1,22 @@
 import { type NextPage } from "next";
+import NextError from "next/error";
 import Head from "next/head";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
-  const [nextQuestion, setNextQuestion] = useState(1);
 
+  const numQuestions = api.questions.numQuestions.useQuery();
 
-  // sets which question to go to
-  useEffect(() => {
-    const maxNumberQuestions = 5
-
-    setNextQuestion(Math.floor(Math.random() * maxNumberQuestions) + 1);
-  },[])
+  if (numQuestions.error || typeof numQuestions.data === "undefined") {
+    return <NextError 
+      statusCode={404}
+      message={'The server cannot find anyone questions'}
+    />
+  }
+  const nextQuestion = Math.floor(Math.random() * numQuestions.data) + 1;
 
   return (
     <>
