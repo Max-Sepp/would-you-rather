@@ -8,11 +8,7 @@ import {
 export const QuestionsRouter = createTRPCRouter({
   numQuestions: publicProcedure
     .query(async ({ctx}) => {
-      const numQuestions = await ctx.prisma.questionBank.findUnique({
-        where: {
-          id: 'clfrrbj1v0002qrok858k05pb' // id for the only starting question bank
-        }
-      })
+      const numQuestions = await ctx.prisma.questionBank.findMany();
 
       if (!numQuestions) {
         throw new TRPCError({
@@ -21,7 +17,7 @@ export const QuestionsRouter = createTRPCRouter({
         })
       }
 
-      return numQuestions.numQuestions;
+      return numQuestions[0]?.numQuestions;
     }),
   getByID: publicProcedure
     .input(z.object({id: z.number()}))
