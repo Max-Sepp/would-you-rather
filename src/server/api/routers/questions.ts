@@ -2,23 +2,29 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import {
-  createTRPCRouter, publicProcedure
+  createTRPCRouter,
+  publicProcedure
 } from "~/server/api/trpc";
 
 export const QuestionsRouter = createTRPCRouter({
   numQuestions: publicProcedure
     .query(async ({ctx}) => {
-      const numQuestions = await ctx.prisma.questionBank.findMany();
+      const largestQuestionPageId = await ctx.prisma.question.findFirst({
+        orderBy: {
+          questionPageId: "desc"
+        }
+      })
 
-      if (!numQuestions) {
+      if (!largestQuestionPageId) {
         throw new TRPCError({
           code: 'NOT_FOUND',
-          message: 'Question bank not found'
+          message: 'Found no questions'
         })
       }
 
-      return numQuestions[0]?.numQuestions;
+      return largestQuestionPageId.questionPageId
     }),
+  
   getByID: publicProcedure
     .input(z.object({id: z.number()}))
     .query(async ({input, ctx}) => {
@@ -48,7 +54,6 @@ export const QuestionsRouter = createTRPCRouter({
       return question
     }),
 
-
   percentageUpdate: publicProcedure
     .input(z.object({
       pageId: z.number(),
@@ -66,8 +71,7 @@ export const QuestionsRouter = createTRPCRouter({
       const leftChosenIncrease = (input.leftClicked) ? 1 : 0;
   
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const updatedQuestion = await ctx.prisma.question.updateMany({
+        await ctx.prisma.question.updateMany({
           where: {
             questionPageId: input.pageId
           },
@@ -84,5 +88,108 @@ export const QuestionsRouter = createTRPCRouter({
       }
 
       return {message:"Success"};
+    }),
+
+  createQuestion: publicProcedure
+    .input(z.object({
+      leftQuestion: z.string().max(190),
+      rightQuestion: z.string().max(190)
+    }))
+    .mutation(async ({input, ctx}) => {
+      await ctx.prisma.question.create({
+        data: {
+          leftQuestion: input.leftQuestion,
+          rightQuestion: input.rightQuestion
+        }
+      })
+
+      return {message: 'success'}
+    }),
+
+  list: publicProcedure
+    .input(z.object({
+      where: z.object({
+        unacceptedQuestions: z.boolean().default(false),
+      }),
+      cursor: z.string().nullish(),
+      limit: z.number().min(1).max(100).default(10)
+    }))
+    .query(async ({ctx, input}) => {
+      const {cursor, limit} = input;
+      const {unacceptedQuestions} = input.where
+
+      const questions = await ctx.prisma.question.findMany({
+        take: input.limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          createdAt: 'asc'
+        },
+        where: unacceptedQuestions ? {questionPageId: -1} : undefined
+      })
+
+      let nextCursor: typeof cursor | undefined = undefined;
+
+      if (questions.length > limit) {
+        const nextItem = questions.pop() as typeof questions[number];
+
+        nextCursor = nextItem.id;
+      }
+
+      return {
+        questions,
+        nextCursor,
+      };
+    }),
+
+  setQuestionPageId: publicProcedure
+    .input(z.object({
+        id: z.string().cuid(),
+        questionPageId: z.number()
+      })
+    )
+    .mutation( async ({ctx, input}) => {
+      const questionWithPageId = await ctx.prisma.question.findMany({
+        where: {
+          questionPageId: input.questionPageId
+        }
+      })
+
+      if (questionWithPageId.length != 0) {
+        throw new TRPCError({
+          code: 'CONFLICT',
+          message: 'questionPageId already in use'
+        })
+      }
+
+      await ctx.prisma.question.update({
+        where: {id: input.id},
+        data: { questionPageId: input.questionPageId},
+      })
+
+      return {message: 'success'}
+    }),
+
+  acceptQuestion: publicProcedure
+    .input(z.object({
+      id: z.string().cuid()
+    }))
+    .mutation(async ({ctx, input}) => {
+      const largestQuestionPageId = await ctx.prisma.question.findFirst({
+        orderBy: {
+          questionPageId: "desc"
+        }
+      })
+
+      let pageId = 1
+      if (largestQuestionPageId) {
+        pageId = largestQuestionPageId.questionPageId + 1
+      } 
+    
+      await ctx.prisma.question.update({
+        where: {id: input.id},
+        data: { questionPageId: pageId},
+      })
+
+      return {questionPageId: pageId}
     })
 });
