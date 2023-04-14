@@ -62,7 +62,7 @@ function QuestionReview({leftQuestion, rightQuestion, questionPageId, questionId
         </div>
         {errors.questionPageId && <p>errors.questionPageId.message</p>}
         <div className="flex flex-row">
-          <input type="submit" className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300" />
+          <input type="submit" value="Submit" className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300" />
           {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <div onClick={acceptQuestion} className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300">Accept</div>
         </div>

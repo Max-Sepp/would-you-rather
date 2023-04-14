@@ -61,7 +61,7 @@ const Suggest: NextPage = () => {
               }
             </div>
           </div>
-          <input type="submit" className="bg-slate-50 dark:bg-slate-700 my-2 w-64 p-2 rounded-xl text-slate-600 dark:text-slate-300 text-center" />
+          <input type="submit" value="Submit" className="bg-slate-50 dark:bg-slate-700 my-2 w-64 p-2 rounded-xl text-slate-600 dark:text-slate-300 text-center" />
         </div>
       </form>
     </>
