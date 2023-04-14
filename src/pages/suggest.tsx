@@ -3,6 +3,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import NavBar from "~/components/NavBar";
 import { api } from "~/utils/api";
 
 const questionSchema = z.object({
@@ -35,7 +36,7 @@ const Suggest: NextPage = () => {
       <Head>
         <title>Would you rather?</title>
       </Head>
-      
+      <NavBar />
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
       <form onSubmit={handleSubmit(submitQuestion)}>
         <div className="flex flex-col items-center">

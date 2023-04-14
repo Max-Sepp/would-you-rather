@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import {
   createTRPCRouter,
+  protectedProcedure,
   publicProcedure
 } from "~/server/api/trpc";
 
@@ -105,8 +106,44 @@ export const QuestionsRouter = createTRPCRouter({
 
       return {message: 'success'}
     }),
+  
+    list: publicProcedure
+    .input(z.object({
+      cursor: z.string().nullish(),
+      limit: z.number().min(1).max(100).default(10)
+    }))
+    .query(async ({ctx, input}) => {
+      const {cursor, limit} = input;
 
-  list: publicProcedure
+
+      const questions = await ctx.prisma.question.findMany({
+        take: input.limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          createdAt: 'asc'
+        },
+        where: { 
+          NOT: {
+            questionPageId: -1
+          }
+        }
+      })
+
+      let nextCursor: typeof cursor | undefined = undefined;
+
+      if (questions.length > limit) {
+        const nextItem = questions.pop() as typeof questions[number];
+
+        nextCursor = nextItem.id;
+      }
+
+      return {
+        questions,
+        nextCursor,
+      };
+    }),
+
+  listUnaccepted:  protectedProcedure
     .input(z.object({
       where: z.object({
         unacceptedQuestions: z.boolean().default(false),
@@ -141,7 +178,7 @@ export const QuestionsRouter = createTRPCRouter({
       };
     }),
 
-  setQuestionPageId: publicProcedure
+  setQuestionPageId:  protectedProcedure
     .input(z.object({
         id: z.string().cuid(),
         questionPageId: z.number()
@@ -169,7 +206,7 @@ export const QuestionsRouter = createTRPCRouter({
       return {message: 'success'}
     }),
 
-  acceptQuestion: publicProcedure
+  acceptQuestion:  protectedProcedure
     .input(z.object({
       id: z.string().cuid()
     }))

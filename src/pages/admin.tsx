@@ -1,9 +1,13 @@
 import { type NextPage } from "next";
-import Dashboard from "~/components/dashboard";
+import Dashboard from "~/components/Dashboard";
+import NavBar from "~/components/NavBar";
 
 const Admin: NextPage = () => {
   return (
-    <Dashboard />
+    <>
+      <NavBar />
+      <Dashboard />
+    </>
   )
 }
 

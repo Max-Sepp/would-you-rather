@@ -1,11 +1,13 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+// import { compare } from "bcryptjs";
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+// import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 
@@ -47,10 +49,63 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
+    // DiscordProvider({
+    //   clientId: env.DISCORD_CLIENT_ID,
+    //   clientSecret: env.DISCORD_CLIENT_SECRET,
+    // }),
+
+    // Relies on using JWT didn't realise this until all programmed up
+    // CredentialsProvider({
+    //   // The name to display on the sign in form (e.g. "Sign in with...")
+    //   name: "Username and Password",
+    //   // `credentials` is used to generate a form on the sign in page.
+    //   // You can specify which fields should be submitted, by adding keys to the `credentials` object.
+    //   // e.g. domain, username, password, 2FA token, etc.
+    //   // You can pass any HTML attribute to the <input> tag through the object.
+    //   credentials: {
+    //     username: { label: "Username", type: "text", placeholder: "Username" },
+    //     password: {  label: "Password", type: "password" }
+    //   },
+    //   async authorize(credentials) {
+
+    //     // check credentials are supplied
+    //     if (credentials == undefined) {
+    //       throw new Error("No credentials supplied")
+    //     }
+
+    //     // check user exists
+    //     const userWithPassword = await prisma.credentialUser.findUnique({
+    //       where: {
+    //         username: credentials.username
+    //       }
+    //     })
+    //     if (!userWithPassword) {
+    //       throw new Error("Username or Password invalid")
+    //     }
+
+    //     // authenticate the user
+    //     const validPassword = await compare(credentials.password, userWithPassword.password)
+
+    //     if (!validPassword || userWithPassword.username !== credentials.username) {
+    //       throw new Error("Username or Password invalid")
+    //     }
+
+    //     // Any object returned will be saved in `user` property of the JWT
+    //     const user = {
+    //       id: userWithPassword.id,
+    //       username: userWithPassword.username,
+    //       email: userWithPassword.username
+    //     }
+
+    //     return user;
+    //   }
+    // }),
+
+    GitHubProvider({
+      clientId: env.GITHUB_ID,
+      clientSecret: env.GITHUB_SECRET
+    })
+
     /**
      * ...add more providers here.
      *

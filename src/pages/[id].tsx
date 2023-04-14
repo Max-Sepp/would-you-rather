@@ -1,10 +1,11 @@
 import NextError from "next/error";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { type NextPage } from "next/types";
 import { useState, type FunctionComponent, type MouseEvent } from "react";
+import NavBar from "~/components/NavBar";
 import { api } from "~/utils/api";
+import { nextQuestion } from "~/utils/nextQuestion";
 
 type QuestionProps = {
   leftOption: string,
@@ -15,19 +16,29 @@ type QuestionProps = {
 }
 
 const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, leftPercentage, rightPercentage, pageId}) => {
+  
+  const router = useRouter()
 
   const questionMutation = api.questions.percentageUpdate.useMutation();
   const [answered, setAnswered] = useState(false)
 
-  const numQuestions = api.questions.numQuestions.useQuery();
+  const numQuestions = api.questions.numQuestions.useQuery(undefined, {
+    staleTime: 10 * (60 * 1000), // 10 mins 
+    cacheTime: 15 * (60 * 1000), // 15 mins 
+  });
 
-  if (numQuestions.error || typeof numQuestions.data === "undefined") {
-    return <NextError 
-      statusCode={404}
-      message={'The server could not find any more questions'}
-    />
+  const nextPage = async () => {
+    if (numQuestions.error || typeof numQuestions.data === "undefined") {
+      return <NextError 
+        statusCode={404}
+        message={'The server could not find any more questions'}
+      />
+    }
+
+    const nextPageId: number = nextQuestion(numQuestions.data);
+
+    await router.push(encodeURIComponent(nextPageId))
   }
-  const nextQuestion = Math.floor(Math.random() * numQuestions.data) + 1;
 
   function submitLeftOption(e: MouseEvent) {
     e.preventDefault();
@@ -56,6 +67,7 @@ const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, le
       <Head>
         <title>Would you rather?</title>
       </Head>
+      <NavBar />
       <h1 className="text-slate-900 dark:text-white text-center p-5 text-5xl">Would You Rather?</h1>
       <div className="flex flex-col md:flex-row justify-center items-center gap-5">
         <div onClick={submitLeftOption} className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 h-96 w-96 text-center flex flex-col items-center justify-center gap-4">
@@ -76,11 +88,10 @@ const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, le
           </div>
         </div>
       </div>
-      <Link href={`/${encodeURIComponent(nextQuestion)}`}>
-        <div className="bg-slate-50 dark:bg-slate-700 my-2 mx-auto w-64 p-2 rounded-xl text-slate-600 dark:text-slate-300 text-center">
-          Next Would You Rather?
-        </div>
-      </Link>
+      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+      <div onClick={nextPage} className="bg-slate-50 dark:bg-slate-700 my-2 mx-auto w-64 p-2 rounded-xl text-slate-600 dark:text-slate-300 text-center">
+        Next Would You Rather?
+      </div>
     </>
   )
   

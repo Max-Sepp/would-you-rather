@@ -1,8 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { api } from "~/utils/api";
+import { useScrollPosition } from "~/utils/useScrollPosition";
+import SignIn from "./SignIn";
 
 const updateQuestionPageIdSchema = z.object({
   questionPageId: z.number()
@@ -68,34 +71,13 @@ function QuestionReview({leftQuestion, rightQuestion, questionPageId, questionId
   )
 }
 
-/**
- *  useScrollPosition that gives a number from 0 to 1 of the position of the view window
- */
-function useScrollPosition() {
-  const [scrollPosition, setScrollPosition] = useState(0);
-  
-  const refreshScrollPosition = () => {
-    const screen = document.documentElement;
-    const scroll = screen.scrollTop / (screen.scrollHeight - screen.clientHeight)
-    setScrollPosition(scroll)
-  }
-
-  useEffect(() => {
-    window.addEventListener("scroll", refreshScrollPosition, {passive: true});
-
-    return () => {
-      window.removeEventListener("scroll", refreshScrollPosition);
-    }
-  }, []);
-
-  return scrollPosition;
-}
-
 const Dashboard: React.FC = () => {
 
   const scrollPosition = useScrollPosition();
 
-  const {data, hasNextPage, fetchNextPage, isFetching} = api.questions.list.useInfiniteQuery(
+  const { data: sessionData } = useSession();
+
+  const {data, hasNextPage, fetchNextPage, isFetching} = api.questions.listUnaccepted.useInfiniteQuery(
     {
       limit: 5,
       where: {
@@ -104,6 +86,7 @@ const Dashboard: React.FC = () => {
     },
     {
       getNextPageParam: (prevPage) => prevPage.nextCursor,
+      enabled: sessionData?.user !== undefined
     }
   )
 
@@ -128,6 +111,7 @@ const Dashboard: React.FC = () => {
           />
          )
       })}
+      <SignIn />
     </div>
   )
 }
