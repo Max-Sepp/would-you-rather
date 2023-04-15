@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { type NextPage } from "next/types";
 import { useState, type FunctionComponent, type MouseEvent } from "react";
 import NavBar from "~/components/NavBar";
+import QuestionNotFound from "~/components/QuestionNotFound";
 import { api } from "~/utils/api";
 import { nextQuestion } from "~/utils/nextQuestion";
 
@@ -36,6 +37,8 @@ const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, le
     }
 
     const nextPageId: number = nextQuestion(numQuestions.data);
+
+    setAnswered(false);
 
     await router.push(encodeURIComponent(nextPageId))
   }
@@ -100,7 +103,12 @@ const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, le
 const QuestionPage: NextPage = () => {
   const pageId = useRouter().query.id;
 
-  if (typeof pageId === "undefined") {
+  const numQuestions = api.questions.numQuestions.useQuery(undefined, {
+    staleTime: 10 * (60 * 1000), // 10 mins 
+    cacheTime: 15 * (60 * 1000), // 15 mins 
+  });
+
+  if (typeof pageId === "undefined" || typeof numQuestions.data == "undefined") {
     return (
       <NextError 
         title={"Could not find the question"}
@@ -111,29 +119,45 @@ const QuestionPage: NextPage = () => {
 
   const id: number = +pageId
 
-  const questionQuery = api.questions.getByID.useQuery({id})
+  const questionQuery = api.questions.getByID.useQuery({id}, {retry: false})
 
-  if (questionQuery.error || typeof questionQuery.data === "undefined") {
+  if (id > numQuestions.data || id <= 0 || questionQuery.error) {
     return (
-      <NextError 
-        title={"Could not find the question"}
-        statusCode={404}
-      />
+      <>
+        <Head>
+          <title>Would you rather?</title>
+        </Head>
+        <QuestionNotFound />
+      </>
     )
   }
+
   const data = questionQuery.data
 
-  const leftPercentage = Math.round((data.leftChosen / data.totalChosen) * 100 )
-  const rightPercentage =  100 - leftPercentage
+  let leftPercentage;
+  let rightPercentage;
+  
+  if (typeof data == "undefined") {
+    leftPercentage = 50
+    rightPercentage = 50
+  } else {
+    leftPercentage = Math.round((data.leftChosen / data.totalChosen) * 100 );
+    rightPercentage =  100 - leftPercentage;
+  }
 
   return (
-    < Question
-      leftOption={data.leftQuestion} 
-      rightOption={data.rightQuestion} 
-      leftPercentage={leftPercentage}
-      rightPercentage={rightPercentage}
-      pageId={id}
-    />
+    <>
+      <Head>
+        <title>Would you rather?</title>
+      </Head>
+      <Question
+        leftOption={data?.leftQuestion || ""} 
+        rightOption={data?.rightQuestion || ""} 
+        leftPercentage={leftPercentage}
+        rightPercentage={rightPercentage}
+        pageId={id}
+      />
+    </>
   )
 }
 
