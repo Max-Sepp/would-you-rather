@@ -1,7 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { BsFillTrashFill } from "react-icons/bs";
 import { z } from "zod";
 import { api } from "~/utils/api";
 import { useScrollPosition } from "~/utils/useScrollPosition";
@@ -17,6 +18,9 @@ function QuestionReview({leftQuestion, rightQuestion, questionPageId, questionId
 
   const setQuestionPageId = api.questions.setQuestionPageId.useMutation().mutateAsync;
   const accept = api.questions.acceptQuestion.useMutation().mutateAsync;
+  const deleteQuestionMutation = api.questions.deleteQuestion.useMutation().mutateAsync;
+
+  const [deleted, setDeleted] = useState(false);
 
   const {
     register,
@@ -37,6 +41,13 @@ function QuestionReview({leftQuestion, rightQuestion, questionPageId, questionId
   const acceptQuestion = async () => {
     const pageId = await accept({id: questionId});
     setValue('questionPageId', pageId.questionPageId);
+  }
+
+  const deleteQuestion = async () => {
+    await deleteQuestionMutation({
+      id: questionId
+    })
+    setDeleted(true);
   }
 
   return (
@@ -60,11 +71,14 @@ function QuestionReview({leftQuestion, rightQuestion, questionPageId, questionId
           <label>Question Page Id: </label>
           <input type="text" {...register("questionPageId", {setValueAs: (value: string) => parseInt(value)})} className="text-slate-700" />
         </div>
-        {errors.questionPageId && <p>errors.questionPageId.message</p>}
-        <div className="flex flex-row">
-          <input type="submit" value="Submit" className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300" />
+        {errors.questionPageId && <p className="text-slate-600 dark:text-slate-300">errors.questionPageId.message</p>}
+        {deleted ? <p className="text-slate-600 dark:text-slate-300">This question has been deleted</p> : null}
+        <div className="flex flex-row items-center gap-4">
+          <input type="submit" value="Submit" className="bg-slate-50 dark:bg-slate-700 my-2 p-2 rounded-xl text-slate-600 dark:text-slate-300" />
           {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-          <div onClick={acceptQuestion} className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300">Accept</div>
+          <div onClick={acceptQuestion} className="bg-slate-50 dark:bg-slate-700 my-2 p-2 rounded-xl text-slate-600 dark:text-slate-300">Accept</div>
+          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+          <div onClick={deleteQuestion} className="bg-red-500 p-3 rounded-xl w-10 h-10"><BsFillTrashFill color="white" className="mx-auto my-auto" /></div>
         </div>
       </form>
     </div>
@@ -100,6 +114,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div>
+      <SignIn />
       {questions.map((question) => {
          return (
           <QuestionReview 
@@ -111,7 +126,6 @@ const Dashboard: React.FC = () => {
           />
          )
       })}
-      <SignIn />
     </div>
   )
 }

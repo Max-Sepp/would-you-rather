@@ -71,9 +71,9 @@ const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, le
         <title>Would you rather?</title>
       </Head>
       <NavBar />
-      <h1 className="text-slate-900 dark:text-white text-center p-5 text-5xl">Would You Rather?</h1>
+      <h1 className="text-slate-900 dark:text-white text-center p-5 text-3xl md:text-5xl">Would You Rather?</h1>
       <div className="flex flex-col md:flex-row justify-center items-center gap-5">
-        <div onClick={submitLeftOption} className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 h-96 w-96 text-center flex flex-col items-center justify-center gap-4">
+        <div onClick={submitLeftOption} className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 h-44 md:h-96 w-72 lg:w-96 text-center flex flex-col items-center justify-center gap-4">
           <div className="text-xl">
           {leftOption}
           </div>
@@ -81,8 +81,8 @@ const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, le
           {leftPercentage} %
           </div>
         </div>
-        <div className="text-bold uppercase text-slate-900 dark:text-white my-auto text-3xl">OR</div>
-        <div onClick={submitRightOption} className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 h-96 w-96 text-center flex flex-col items-center justify-center gap-4">
+        <div className="text-bold uppercase text-slate-900 dark:text-white my-auto text-xl md:text-3xl">OR</div>
+        <div onClick={submitRightOption} className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 h-44 md:h-96 w-72 lg:w-96 text-center flex flex-col items-center justify-center gap-4">
           <div className="text-xl">
           {rightOption}
           </div>

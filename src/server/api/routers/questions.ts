@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -121,7 +122,7 @@ export const QuestionsRouter = createTRPCRouter({
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: [
           {questionPageId: 'asc'},
-          {createdAt: 'asc'}
+          {createdAt: 'desc'}
         ],
         where: { 
           NOT: {
@@ -161,7 +162,7 @@ export const QuestionsRouter = createTRPCRouter({
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: [
           {questionPageId: 'asc'},
-          {createdAt: 'asc'}
+          {createdAt: 'desc'}
         ],
         where: unacceptedQuestions ? {questionPageId: -1} : undefined
       })
@@ -230,5 +231,27 @@ export const QuestionsRouter = createTRPCRouter({
       })
 
       return {questionPageId: pageId}
+    }),
+
+  deleteQuestion: protectedProcedure
+    .input(z.object({
+      id: z.string()
+    }))
+    .mutation(async ({input, ctx}) => {
+      try {
+        await ctx.prisma.question.delete({
+          where: {
+            id: input.id
+          }
+        })
+      } catch(error) {
+        if (error instanceof Prisma.NotFoundError)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Did not find the question"
+        })
+      }
+
+      return {message: "successful"}
     })
 });
