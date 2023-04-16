@@ -119,9 +119,10 @@ export const QuestionsRouter = createTRPCRouter({
       const questions = await ctx.prisma.question.findMany({
         take: input.limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
-        orderBy: {
-          createdAt: 'asc'
-        },
+        orderBy: [
+          {questionPageId: 'asc'},
+          {createdAt: 'asc'}
+        ],
         where: { 
           NOT: {
             questionPageId: -1
@@ -158,9 +159,10 @@ export const QuestionsRouter = createTRPCRouter({
       const questions = await ctx.prisma.question.findMany({
         take: input.limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
-        orderBy: {
-          createdAt: 'asc'
-        },
+        orderBy: [
+          {questionPageId: 'asc'},
+          {createdAt: 'asc'}
+        ],
         where: unacceptedQuestions ? {questionPageId: -1} : undefined
       })
 
