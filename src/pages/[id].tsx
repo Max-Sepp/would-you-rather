@@ -1,3 +1,4 @@
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import NextError from "next/error";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -18,10 +19,13 @@ type QuestionProps = {
 
 const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, leftPercentage, rightPercentage, pageId}) => {
   
-  const router = useRouter()
+  const router = useRouter();
 
   const questionMutation = api.questions.percentageUpdate.useMutation();
-  const [answered, setAnswered] = useState(false)
+  const [answered, setAnswered] = useState(false);
+
+  const [leftParent] = useAutoAnimate();
+  const [rightParent] = useAutoAnimate();
 
   const numQuestions = api.questions.numQuestions.useQuery(undefined, {
     staleTime: 10 * (60 * 1000), // 10 mins 
@@ -73,22 +77,18 @@ const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, le
       <NavBar />
       <h1 className="text-slate-900 dark:text-white text-center p-5 text-3xl md:text-5xl">Would You Rather?</h1>
       <div className="flex flex-col md:flex-row justify-center items-center gap-5">
-        <div onClick={submitLeftOption} className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 h-44 md:h-96 w-72 lg:w-96 text-center flex flex-col items-center justify-center gap-4">
+        <div ref={leftParent} onClick={submitLeftOption} className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 h-44 md:h-96 w-72 lg:w-96 text-center flex flex-col items-center justify-center gap-4">
           <div className="text-xl">
           {leftOption}
           </div>
-          <div className={`transition-all duration-300 ${answered ? "opacity-100" : "opacity-0"}`}>
-          {leftPercentage} %
-          </div>
+          {answered ? <div>{leftPercentage} %</div> : null}
         </div>
         <div className="text-bold uppercase text-slate-900 dark:text-white my-auto text-xl md:text-3xl">OR</div>
-        <div onClick={submitRightOption} className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 h-44 md:h-96 w-72 lg:w-96 text-center flex flex-col items-center justify-center gap-4">
+        <div ref={rightParent} onClick={submitRightOption} className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 h-44 md:h-96 w-72 lg:w-96 text-center flex flex-col items-center justify-center gap-4">
           <div className="text-xl">
           {rightOption}
           </div>
-          <div className={`transition-all duration-300 ${answered ? "opacity-100" : "opacity-0"}`}>
-          {rightPercentage} %
-          </div>
+          {answered ? <div>{rightPercentage} %</div> : null}
         </div>
       </div>
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
