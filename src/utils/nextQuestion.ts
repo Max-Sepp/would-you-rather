@@ -5,16 +5,23 @@
  * @returns 
  */
 export function nextQuestion(numQuestions: number): number {
-  const sessionQuestions = sessionStorage.getItem('ms-questions-visited');
   let questionsVisited: number[] = []
-  if (sessionQuestions != null) {
-    questionsVisited = JSON.parse(sessionQuestions) as number[]
-  }
-  let nextQuestion = Math.floor(Math.random() * (numQuestions - questionsVisited.length)) + 1;
-  while (nextQuestion in questionsVisited) {
-    nextQuestion += 1;
-  }
-  questionsVisited.push(nextQuestion);
-  sessionStorage.setItem('ms-questions-visited', JSON.stringify(questionsVisited));
+  if (typeof window !== 'undefined') {
+    const sessionQuestions = sessionStorage.getItem('ms-questions-visited');
+    if (sessionQuestions != null) {
+      questionsVisited = JSON.parse(sessionQuestions) as number[]
+    }
+  } 
+  const nextQuestion = getNextQuestion(numQuestions, questionsVisited, Math.random());
   return nextQuestion;
 }
+
+function getNextQuestion(largestNum: number, notAllowedList: number[], randomNum: number): number {
+  let nextQuestion = Math.floor(randomNum * (largestNum - notAllowedList.length)) + 1;
+  while (notAllowedList.includes(nextQuestion)) {
+    nextQuestion += 1;
+  }
+  return nextQuestion
+}
+
+

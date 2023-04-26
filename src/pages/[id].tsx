@@ -1,9 +1,10 @@
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import NextError from "next/error";
 import Head from "next/head";
+import Link from 'next/link';
 import { useRouter } from "next/router";
 import { type NextPage } from "next/types";
-import { useState, type FunctionComponent, type MouseEvent } from "react";
+import { useEffect, useState, type FunctionComponent, type MouseEvent } from "react";
 import NavBar from "~/components/NavBar";
 import QuestionNotFound from "~/components/QuestionNotFound";
 import { api } from "~/utils/api";
@@ -18,8 +19,6 @@ type QuestionProps = {
 }
 
 const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, leftPercentage, rightPercentage, pageId}) => {
-  
-  const router = useRouter();
 
   const questionMutation = api.questions.percentageUpdate.useMutation();
   const [answered, setAnswered] = useState(false);
@@ -32,19 +31,29 @@ const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, le
     cacheTime: 15 * (60 * 1000), // 15 mins 
   });
 
-  const nextPage = async () => {
-    if (numQuestions.error || typeof numQuestions.data === "undefined") {
-      return <NextError 
-        statusCode={404}
-        message={'The server could not find any more questions'}
-      />
+  const [nextPageId, setNextPageId] = useState(1);
+
+  useEffect(() => {
+    if (!(numQuestions.error || typeof numQuestions.data === "undefined")) {
+      setNextPageId(nextQuestion(numQuestions.data))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leftOption, rightOption])
 
-    const nextPageId: number = nextQuestion(numQuestions.data);
+  const handleSessionStorage = () => {
+    let questionsVisited: number[] = []
+    const sessionQuestions = sessionStorage.getItem('ms-questions-visited');
+    if (sessionQuestions != null) {
+      questionsVisited = JSON.parse(sessionQuestions) as number[]
+    }
+    questionsVisited.push(nextPageId);
+    sessionStorage.setItem('ms-questions-visited', JSON.stringify(questionsVisited));
+  }
 
+  const nextPage = () => {
     setAnswered(false);
 
-    await router.push(encodeURIComponent(nextPageId))
+    handleSessionStorage();
   }
 
   function submitLeftOption(e: MouseEvent) {
@@ -92,9 +101,11 @@ const Question: FunctionComponent<QuestionProps> = ({leftOption, rightOption, le
         </div>
       </div>
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-      <div onClick={nextPage} className="bg-slate-50 dark:bg-slate-700 my-2 mx-auto w-64 p-2 rounded-xl text-slate-600 dark:text-slate-300 text-center">
-        Next Would You Rather?
-      </div>
+      <Link href={`/${encodeURIComponent(nextPageId)}`}>
+        <div onClick={nextPage} className="bg-slate-50 dark:bg-slate-700 my-2 mx-auto w-64 p-2 rounded-xl text-slate-600 dark:text-slate-300 text-center">
+          Next Would You Rather?
+        </div>
+      </Link>
     </>
   )
   
