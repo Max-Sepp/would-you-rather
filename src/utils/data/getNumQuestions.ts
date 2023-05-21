@@ -6,7 +6,6 @@ import { db } from "~/db/db";
  */
 export const getNumQuestion = cache(async () => {
   const numQuestions = await db.selectFrom("question").select("questionPageId").orderBy("questionPageId", "desc").executeTakeFirst();
-  console.log("numQuestions",numQuestions)
   if (numQuestions == undefined) {
     return 0
   } else {
