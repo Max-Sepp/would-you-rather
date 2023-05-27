@@ -5,7 +5,7 @@ import { db } from "~/db/db";
  * Gets the number of would you rather questions in the database
  */
 export const getNumQuestion = cache(async () => {
-  const numQuestions = await db.selectFrom("question").select("questionPageId").orderBy("questionPageId", "desc").executeTakeFirst();
+  const numQuestions = await db.selectFrom("Question").select("questionPageId").orderBy("questionPageId", "desc").executeTakeFirst();
   if (numQuestions == undefined) {
     return 0
   } else {

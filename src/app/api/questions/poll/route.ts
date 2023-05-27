@@ -20,7 +20,7 @@ export async function POST(req: Request) {
 
   const leftChosen: number = (data.leftChosen) ? 1 : 0;
 
-  const result = await db.updateTable("question").set(({bxp}) => ({
+  const result = await db.updateTable("Question").set(({bxp}) => ({
     leftChosen: bxp("leftChosen", "+", leftChosen),
     totalChosen: bxp("totalChosen", "+", 1)
   })).executeTakeFirst();
