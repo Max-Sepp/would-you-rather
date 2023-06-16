@@ -4,7 +4,7 @@ import { db } from "~/db/db";
 import { env } from "~/env.mjs";
 
 const acceptInputSchema = z.object({
-  id: z.string()
+  id: z.number()
 })
 
 /**
@@ -12,7 +12,7 @@ const acceptInputSchema = z.object({
  */
 export async function POST(req: Request) {
   if (req.headers.get("Authorization") != env.ADMIN_KEY) {
-    return NextResponse.json({success: false}, {status: 401})
+    return NextResponse.json({ success: false }, { status: 401 })
   }
 
   const body = await req.json();
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   let data;
 
   if (!parsedData.success) {
-    return NextResponse.json({success: false}, {status: 400})
+    return NextResponse.json({ success: false }, { status: 400 })
   } else {
     data = parsedData.data
   }
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
   const largestQuestionPageId = await db.selectFrom("Question").select("questionPageId").orderBy("questionPageId", "desc").limit(1).executeTakeFirst();
 
   if (largestQuestionPageId == undefined) {
-    return NextResponse.json({success: false}, {status: 400})
+    return NextResponse.json({ success: false }, { status: 400 })
   }
 
   const result = await db
@@ -36,12 +36,12 @@ export async function POST(req: Request) {
     .set({
       questionPageId: largestQuestionPageId.questionPageId + 1
     })
-    .where("id", "=", Number(data.id))
+    .where("id", "=", data.id)
     .executeTakeFirst()
 
   if (result.numUpdatedRows > 0) {
-    return NextResponse.json({success: true}, {status:200})
-  } 
+    return NextResponse.json({ questionPageId: largestQuestionPageId.questionPageId + 1 }, { status: 200 })
+  }
 
-  return NextResponse.json({success: false}, {status: 500})
+  return NextResponse.json({ success: false }, { status: 500 })
 }

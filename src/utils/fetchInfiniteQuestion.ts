@@ -32,17 +32,17 @@ export function useFetchInfiniteQuestion(initialData: questions) {
     newData.push(page.data)
     setData(newData)
 
-
+    setNextPage(page.hasNextPage)
     setIsFetching(false)
   }
 
-  return {isFetching, hasNextPage, data, fetchNextPage}
+  return { isFetching, hasNextPage, data, fetchNextPage }
 }
 
-export async function fetchPage (page: number) {
+export async function fetchPage(page: number) {
   const data = await fetch(`api/questions?page=${page}`)
 
-  const pageData: {data: questions, hasNextPage: boolean} = await data.json()
+  const pageData: { data: questions, hasNextPage: boolean } = await data.json()
 
   return pageData
 }
