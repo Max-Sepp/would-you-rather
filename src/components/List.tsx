@@ -39,7 +39,8 @@ export default function List({ initialData }: { initialData: questions }) {
     if (scrollPosition > 0.9 && hasNextPage && !isFetching) {
       void fetchNextPage();
     }
-  }, [scrollPosition, hasNextPage, isFetching, fetchNextPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrollPosition]);
 
   const questions = data?.flatMap((page) => page) ?? [];
 

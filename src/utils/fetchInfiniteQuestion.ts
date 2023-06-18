@@ -14,10 +14,9 @@ export type questions = {
 
 export function useFetchInfiniteQuestion(initialData: questions) {
   const [isFetching, setIsFetching] = useState(false);
-  const [hasNextPage, setNextPage] = useState(false);
+  const [hasNextPage, setHasNextPage] = useState(true);
   const [data, setData] = useState([initialData]);
-
-  let nextPage = 1;
+  const [nextPage, setNextPage] = useState(1);
 
   const fetchNextPage = async () => {
 
@@ -25,14 +24,14 @@ export function useFetchInfiniteQuestion(initialData: questions) {
 
     const page = await fetchPage(nextPage)
 
-    nextPage += 1
+    setNextPage(nextPage + 1);
 
     // update data
     const newData = data;
     newData.push(page.data)
     setData(newData)
 
-    setNextPage(page.hasNextPage)
+    setHasNextPage(page.hasNextPage)
     setIsFetching(false)
   }
 
