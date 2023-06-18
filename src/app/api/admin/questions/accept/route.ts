@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     .set({
       questionPageId: largestQuestionPageId.questionPageId + 1
     })
-    .where("id", "=", data.id)
+    .where("questionId", "=", data.id)
     .executeTakeFirst()
 
   if (result.numUpdatedRows > 0) {

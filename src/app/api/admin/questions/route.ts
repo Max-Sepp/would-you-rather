@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     .set({
       questionPageId: data.questionPageId
     })
-    .where("id", "=", data.id)
+    .where("questionId", "=", data.id)
     .executeTakeFirst()
 
   if (result.numUpdatedRows > 0) {
@@ -53,7 +53,7 @@ export async function DELETE(req: Request) {
   }
 
   const { searchParams } = new URL(req.url);
-  const pageParam = searchParams.get("id");
+  const pageParam = searchParams.get("questionId");
   let id;
   if (pageParam == null) {
     id = 0;
@@ -61,7 +61,7 @@ export async function DELETE(req: Request) {
     id = Number(pageParam);
   }
 
-  const result = await db.deleteFrom("Question").where("id", "=", id).execute();
+  const result = await db.deleteFrom("Question").where("questionId", "=", id).execute();
 
   if (result.length = 1) {
     return NextResponse.json({ success: true }, { status: 200 })
