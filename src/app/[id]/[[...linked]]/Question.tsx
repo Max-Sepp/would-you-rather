@@ -22,7 +22,7 @@ async function poll({ leftClicked, pageId }: { leftClicked: boolean, pageId: num
     },
     body: JSON.stringify({
       leftChosen: leftClicked,
-      questionId: pageId
+      questionId: Number(pageId)
     })
   })
 }
@@ -53,19 +53,19 @@ export default function Question({ leftOption, rightOption, leftPercentage, righ
     handleSessionStorage();
   }
 
-  function submitLeftOption(e: MouseEvent) {
+  async function submitLeftOption(e: MouseEvent) {
     e.preventDefault();
     if (!answered) {
       setAnswered(true);
-      poll({ leftClicked: true, pageId })
+      await poll({ leftClicked: true, pageId });
     }
   }
 
-  function submitRightOption(e: MouseEvent) {
+  async function submitRightOption(e: MouseEvent) {
     e.preventDefault();
     if (!answered) {
       setAnswered(true);
-      poll({ leftClicked: false, pageId })
+      await poll({ leftClicked: false, pageId });
     }
   }
 
@@ -87,7 +87,7 @@ export default function Question({ leftOption, rightOption, leftPercentage, righ
           {answered ? <div>{rightPercentage} %</div> : null}
         </div>
       </div>
-      <Link href={`/${encodeURIComponent(nextPageId)}`}>
+      <Link href={`/${encodeURIComponent(nextPageId)}/linked`}>
         <div onClick={nextPage} className="bg-slate-50 dark:bg-slate-700 my-2 mx-auto w-64 p-2 rounded-xl text-slate-600 dark:text-slate-300 text-center">
           Next Would You Rather?
         </div>

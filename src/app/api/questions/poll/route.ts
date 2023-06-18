@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import { NextResponse } from 'next/server';
 import { z } from "zod";
 import { db } from '~/db/db';
@@ -20,7 +22,7 @@ export async function POST(req: Request) {
 
   const leftChosen: number = (data.leftChosen) ? 1 : 0;
 
-  const result = await db.updateTable("Question").set(({bxp}) => ({
+  const result = await db.updateTable("Question").where("id", "=", data.questionId).set(({bxp}) => ({
     leftChosen: bxp("leftChosen", "+", leftChosen),
     totalChosen: bxp("totalChosen", "+", 1)
   })).executeTakeFirst();

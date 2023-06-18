@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import SuggestForm from "~/components/SuggestForm";
 
 export default async function Suggest() {

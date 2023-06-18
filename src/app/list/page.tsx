@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import List from "~/components/List";
 import { db } from "~/db/db";
 

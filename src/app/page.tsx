@@ -1,4 +1,5 @@
 export const revalidate = 600;
+export const runtime = 'edge';
 
 import Link from "next/link";
 import { getNumQuestion } from "~/utils/data/getNumQuestions";

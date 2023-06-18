@@ -1,5 +1,7 @@
-import { NextResponse } from "next/server"
-import { env } from "~/env.mjs"
+export const runtime = 'edge';
+
+import { NextResponse } from "next/server";
+import { env } from "~/env.mjs";
 
 export async function POST(req: Request) {
   if (req.headers.get("Authorization") == env.ADMIN_KEY) {

@@ -1,5 +1,8 @@
-import NavBar from '~/components/NavBar'
-import './globals.css'
+export const runtime = 'edge';
+export const preferredRegion = 'lhr1';
+
+import NavBar from '~/components/NavBar';
+import './globals.css';
 
 export const metadata = {
   title: 'Would you rather?',
