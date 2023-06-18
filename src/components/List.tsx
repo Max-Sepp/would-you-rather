@@ -1,10 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import React, { useEffect } from "react";
-import { api } from "~/utils/api";
+import { questions, useFetchInfiniteQuestion } from "~/utils/fetchInfiniteQuestion";
 
 import { useScrollPosition } from "~/utils/useScrollPosition";
 
-function QuestionCard({leftQuestion, rightQuestion, questionPageId}: {leftQuestion: string, rightQuestion: string, questionPageId: number}) {
+function QuestionCard({ leftQuestion, rightQuestion, questionPageId }: { leftQuestion: string, rightQuestion: string, questionPageId: number }) {
   return (
 
     <div className="rounded-xl m-2 p-1 dark:bg-slate-900 bg-slate-100 max-w-4xl mx-auto">
@@ -12,13 +14,13 @@ function QuestionCard({leftQuestion, rightQuestion, questionPageId}: {leftQuesti
         <div className="flex flex-col md:flex-row justify-center items-center gap-1">
           <div className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 w-96 text-center flex flex-col items-center justify-center gap-4">
             <div className="text-base">
-            {leftQuestion}
+              {leftQuestion}
             </div>
           </div>
           <div className="text-bold uppercase text-slate-900 dark:text-white my-auto text-xl">OR</div>
           <div className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 w-96 text-center flex flex-col items-center justify-center gap-4">
             <div className="text-base">
-            {rightQuestion}
+              {rightQuestion}
             </div>
           </div>
         </div>
@@ -27,41 +29,33 @@ function QuestionCard({leftQuestion, rightQuestion, questionPageId}: {leftQuesti
   )
 }
 
-function List() {
+export default function List({ initialData }: { initialData: questions }) {
 
   const scrollPosition = useScrollPosition();
 
-  const {data, hasNextPage, fetchNextPage, isFetching} = api.questions.list.useInfiniteQuery(
-    {
-      limit: 10,
-    },
-    {
-      getNextPageParam: (prevPage) => prevPage.nextCursor,
-    }
-  )
+  const { isFetching, hasNextPage, fetchNextPage, data } = useFetchInfiniteQuestion(initialData)
 
   useEffect(() => {
     if (scrollPosition > 0.9 && hasNextPage && !isFetching) {
       void fetchNextPage();
     }
-  }, [scrollPosition, hasNextPage, isFetching, fetchNextPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrollPosition]);
 
-  const questions = data?.pages.flatMap((page) => page.questions) ?? [];
+  const questions = data?.flatMap((page) => page) ?? [];
 
   return (
     <>
       {questions.map((question) => {
         return (
-        <QuestionCard
-          key={question.id}
-          leftQuestion={question.leftQuestion}
-          rightQuestion={question.rightQuestion}
-          questionPageId={question.questionPageId}
-        />
+          <QuestionCard
+            key={question.id}
+            leftQuestion={question.leftQuestion}
+            rightQuestion={question.rightQuestion}
+            questionPageId={question.questionPageId}
+          />
         )
       })}
     </>
   )
 }
-
-export default List;
