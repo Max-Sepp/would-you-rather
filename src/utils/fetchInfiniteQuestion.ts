@@ -6,7 +6,7 @@ export type questions = {
   leftQuestion: string;
   rightQuestion: string;
   questionPageId: number;
-  id: number;
+  questionId: number;
   leftChosen: number;
   totalChosen: number;
   createdAt: Date;

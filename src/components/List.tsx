@@ -49,7 +49,7 @@ export default function List({ initialData }: { initialData: questions }) {
       {questions.map((question) => {
         return (
           <QuestionCard
-            key={question.id}
+            key={question.questionId}
             leftQuestion={question.leftQuestion}
             rightQuestion={question.rightQuestion}
             questionPageId={question.questionPageId}

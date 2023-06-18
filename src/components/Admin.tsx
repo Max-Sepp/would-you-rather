@@ -159,11 +159,11 @@ export default function Admin() {
       {questions.map((question) => {
         return (
           <QuestionReview
-            key={question.id}
+            key={question.questionId}
             leftQuestion={question.leftQuestion}
             rightQuestion={question.rightQuestion}
             questionPageId={question.questionPageId}
-            questionId={question.id}
+            questionId={question.questionId}
             password={password}
           />
         )
