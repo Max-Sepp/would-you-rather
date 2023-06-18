@@ -84,7 +84,6 @@ function QuestionReview({ leftQuestion, rightQuestion, questionPageId, questionI
           </div>
         </div>
       </div>
-      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
       <form onSubmit={handleSubmit(submit)} className="flex flex-col items-center">
         <div className="bg-slate-50 dark:bg-slate-700 m-2 p-2 rounded-xl text-slate-600 dark:text-slate-300 w-96">
           <label>Question Page Id: </label>
@@ -94,9 +93,7 @@ function QuestionReview({ leftQuestion, rightQuestion, questionPageId, questionI
         {deleted ? <p className="text-slate-600 dark:text-slate-300">This question has been deleted</p> : null}
         <div className="flex flex-row items-center gap-4">
           <input type="submit" value="Submit" className="bg-slate-50 dark:bg-slate-700 my-2 p-2 rounded-xl text-slate-600 dark:text-slate-300" />
-          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <div onClick={acceptQuestion} className="bg-slate-50 dark:bg-slate-700 my-2 p-2 rounded-xl text-slate-600 dark:text-slate-300">Accept</div>
-          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <div onClick={deleteQuestion} className="bg-red-500 p-3 rounded-xl w-10 h-10"><BsFillTrashFill color="white" className="mx-auto my-auto" /></div>
         </div>
       </form>
