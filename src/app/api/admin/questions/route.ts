@@ -1,12 +1,11 @@
-export const config = {
-  runtime: 'edge', 
-  regions: ['dub1'], 
-};
+export const runtime = 'edge'; 
+export const preferredRegion = 'dub1';
 
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "~/db/db";
 import { env } from "~/env.mjs";
+import { getBodyData, getNumSearchParam } from "~/utils/parseData";
 
 
 // change the questionPageId to whatever is sent in the body of the query
@@ -23,14 +22,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false }, { status: 401 })
   }
 
-  const body = await req.json();
-  const parsedData = await setQuestionPageIdInputSchema.safeParseAsync(body);
-  let data;
+  const data = await getBodyData(req, setQuestionPageIdInputSchema);
 
-  if (!parsedData.success) {
+  if (data == null) {
     return NextResponse.json({ success: false }, { status: 400 })
-  } else {
-    data = parsedData.data
   }
 
   const result = await db
@@ -48,11 +43,6 @@ export async function POST(req: Request) {
   return NextResponse.json({ success: false }, { status: 500 })
 }
 
-
-const deleteQuestionInputSchema = z.object({
-  id: z.number()
-})
-
 /**
  * deletes the given would you rather question
  */
@@ -61,14 +51,7 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ success: false }, { status: 401 })
   }
 
-  const { searchParams } = new URL(req.url);
-  const pageParam = searchParams.get("questionId");
-  let id;
-  if (pageParam == null) {
-    id = 0;
-  } else {
-    id = Number(pageParam);
-  }
+  const id = getNumSearchParam(req, "id")
 
   const result = await db.deleteFrom("Question").where("questionId", "=", id).execute();
 
@@ -88,14 +71,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: false }, { status: 401 })
   }
 
-  const { searchParams } = new URL(req.url);
-  const pageParam = searchParams.get("page");
-  let page;
-  if (pageParam == null) {
-    page = 0;
-  } else {
-    page = Number(pageParam);
-  }
+  const page = getNumSearchParam(req, "page")
 
   const questions = await db.selectFrom("Question").selectAll().orderBy("questionPageId", "asc").offset(10 * page + 1).limit(10).execute();
 

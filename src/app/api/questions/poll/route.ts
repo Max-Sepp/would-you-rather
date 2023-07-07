@@ -1,11 +1,10 @@
-export const config = {
-  runtime: 'edge', 
-  regions: ['dub1'], 
-};
+export const runtime = 'edge'; 
+export const preferredRegion = 'dub1';
 
 import { NextResponse } from 'next/server';
 import { z } from "zod";
 import { db } from '~/db/db';
+import { getBodyData } from '~/utils/parseData';
 
 const pollInputSchema = z.object({
   leftChosen: z.boolean(),
@@ -16,14 +15,10 @@ const pollInputSchema = z.object({
  * the endpoint used to poll when a user clicks one answer of the question
  */
 export async function POST(req: Request) {
-  const body = await req.json();
-  const parsedData = await pollInputSchema.safeParseAsync(body);
-  let data;
+  const data = await getBodyData(req, pollInputSchema)
 
-  if (!parsedData.success) {
+  if (data == null) {
     return NextResponse.json(null, {status: 400})
-  } else {
-    data = parsedData.data
   }
 
   const leftChosen: number = (data.leftChosen) ? 1 : 0;

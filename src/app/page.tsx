@@ -1,8 +1,6 @@
 export const revalidate = 600;
-export const config = {
-  runtime: 'edge',
-  regions: ['dub1'],
-};
+export const runtime = 'edge';
+export const preferredRegion = 'dub1';
 
 import Link from "next/link";
 import { getNumQuestion } from "~/utils/data/getNumQuestions";

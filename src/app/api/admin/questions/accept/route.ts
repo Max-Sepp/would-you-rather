@@ -1,12 +1,11 @@
-export const config = {
-  runtime: 'edge', 
-  regions: ['dub1'], 
-};
+export const runtime = 'edge'; 
+export const preferredRegion = 'dub1';
 
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "~/db/db";
 import { env } from "~/env.mjs";
+import { getBodyData } from "~/utils/parseData";
 
 const acceptInputSchema = z.object({
   id: z.number()
@@ -20,14 +19,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false }, { status: 401 })
   }
 
-  const body = await req.json();
-  const parsedData = await acceptInputSchema.safeParseAsync(body);
-  let data;
+  const data = await getBodyData(req, acceptInputSchema)
 
-  if (!parsedData.success) {
+  if (data == null) {
     return NextResponse.json({ success: false }, { status: 400 })
-  } else {
-    data = parsedData.data
   }
 
   const largestQuestionPageId = await db.selectFrom("Question").select("questionPageId").orderBy("questionPageId", "desc").limit(1).executeTakeFirst();

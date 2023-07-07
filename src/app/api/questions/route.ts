@@ -1,24 +1,16 @@
-export const config = {
-  runtime: 'edge', 
-  regions: ['dub1'], 
-};
+export const runtime = 'edge'; 
+export const preferredRegion = 'dub1';
 
 import { NextResponse } from "next/server";
 import { db } from "~/db/db";
+import { getNumSearchParam } from "~/utils/parseData";
 
 /**
  * Infinite query for list page 
  *
  */
 export async function GET(req: Request) {
-  const {searchParams} = new URL(req.url);
-  const pageParam = searchParams.get("page");
-  let page;
-  if (pageParam == null) {
-    page = 0;
-  } else {
-    page = Number(pageParam);
-  }
+  const page = getNumSearchParam(req, "page")
 
   const questions = await db.selectFrom("Question").selectAll().where("questionPageId", ">", 0).orderBy("questionPageId", "asc").offset(10 * page + 1).limit(10).execute();
 
