@@ -1,4 +1,7 @@
-export const runtime = 'edge';
+export const config = {
+  runtime: 'edge',
+  regions: ['dub1'],
+};
 
 import { db } from "~/db/db";
 import Admin from "../../components/Admin";

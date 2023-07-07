@@ -1,4 +1,7 @@
-export const runtime = 'edge';
+export const config = {
+  runtime: 'edge',
+  regions: ['dub1'],
+};
 export const preferredRegion = 'lhr1';
 
 import NavBar from '~/components/NavBar';

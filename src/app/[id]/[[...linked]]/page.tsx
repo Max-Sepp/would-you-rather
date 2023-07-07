@@ -1,10 +1,13 @@
 export const revalidate = 600;
-export const runtime = 'edge';
+export const config = {
+  runtime: 'edge',
+  regions: ['dub1'],
+};
 
 import { redirect } from "next/navigation";
 import { getNumQuestion } from "~/utils/data/getNumQuestions";
 import { getQuestion } from "~/utils/data/getQuestion";
-import Question from "./Question";
+import Question from "../../../components/Question";
 
 export default async function Page({ params }: { params: { id: string, linked: string[] | undefined } }) {
 

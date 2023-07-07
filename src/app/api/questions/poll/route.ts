@@ -1,4 +1,7 @@
-export const runtime = 'edge';
+export const config = {
+  runtime: 'edge', 
+  regions: ['dub1'], 
+};
 
 import { NextResponse } from 'next/server';
 import { z } from "zod";
@@ -9,6 +12,9 @@ const pollInputSchema = z.object({
   questionId: z.number()
 })
 
+/** 
+ * the endpoint used to poll when a user clicks one answer of the question
+ */
 export async function POST(req: Request) {
   const body = await req.json();
   const parsedData = await pollInputSchema.safeParseAsync(body);

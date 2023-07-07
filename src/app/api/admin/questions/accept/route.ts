@@ -1,4 +1,7 @@
-export const runtime = 'edge';
+export const config = {
+  runtime: 'edge', 
+  regions: ['dub1'], 
+};
 
 import { NextResponse } from "next/server";
 import { z } from "zod";

@@ -1,4 +1,7 @@
-export const runtime = 'edge';
+export const config = {
+  runtime: 'edge', 
+  regions: ['dub1'], 
+};
 
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -12,6 +15,9 @@ const setQuestionPageIdInputSchema = z.object({
   questionPageId: z.number()
 })
 
+/**
+ *  changes the questionPageId of the given would you rather question
+ */
 export async function POST(req: Request) {
   if (req.headers.get("Authorization") != env.ADMIN_KEY) {
     return NextResponse.json({ success: false }, { status: 401 })
@@ -47,6 +53,9 @@ const deleteQuestionInputSchema = z.object({
   id: z.number()
 })
 
+/**
+ * deletes the given would you rather question
+ */
 export async function DELETE(req: Request) {
   if (req.headers.get("Authorization") != env.ADMIN_KEY) {
     return NextResponse.json({ success: false }, { status: 401 })
