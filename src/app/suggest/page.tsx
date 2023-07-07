@@ -1,7 +1,5 @@
-export const config = {
-  runtime: 'edge',
-  regions: ['dub1'],
-};
+export const runtime = 'edge';
+export const preferredRegion = 'dub1';
 
 import SuggestForm from "~/components/SuggestForm";
 
