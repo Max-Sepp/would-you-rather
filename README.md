@@ -1,4 +1,4 @@
-# Would you rather?
+# Would you rather? protected branch test
 
 [Link to website](https://ms-would-you-rather.vercel.app)
 
