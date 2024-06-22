@@ -1,5 +1,5 @@
 # Would you rather?
 
-[Link to website](https://ms-would-you-rather.vercel.app)
+I have stopped hosting this project on the internet
 
 Using the t3 stack
