@@ -1,0 +1,55 @@
+questionPageId,leftQuestion,rightQuestion,leftChosen,totalChosen,createdAt,questionId
+1,be batman,be superman,3,12,2023-04-14 17:34:42.647,1
+2,you gain $10,000,your friend gains $100,000 but they don't know it was from you,10,13,2023-04-14 17:36:34.910,2
+3,be a successful physicist,an unsuccessful pop star,13,15,2023-04-14 17:59:46.579,3
+4,Be a geek,Be a nerd,10,13,2023-04-14 18:47:26.561,4
+6,Superwoman,Batwoman,5,11,2023-04-15 14:03:39.054,5
+5,Butterfly,Hummingbird,2,10,2023-04-15 14:04:17.829,6
+7,Burn to death,Freeze to death,7,11,2023-04-15 17:30:02.139,7
+41,Be an Amazonian Tree Frog,Be a Sea Snake,3,4,2023-04-15 17:30:46.992,8
+20,Bury a body,Cover for a murderer,5,8,2023-04-15 17:32:52.273,9
+11,Kill the Easter Bunny,Kill the Tooth Fairy,6,10,2023-04-15 17:34:22.862,10
+10,Have a very risky surgery with a chance of living for 10 more years,Ignore the surgery but know you can only live one more year.,4,6,2023-04-15 17:36:06.081,11
+8,Be Mario,Be Luigi,5,7,2023-04-15 17:37:48.814,12
+9,Do a marathon,Do a triathlon,3,6,2023-04-15 17:39:38.686,13
+12,Highlight your entire face,Permanent Marker one of your arms,3,9,2023-04-15 17:43:32.499,14
+15,Perform a Freestyle rap in front of Eminem,Perform a freestyle dance in front of Craig Revel Horwood,1,6,2023-04-15 17:45:04.592,15
+14,Learn the piano,Learn the guitar,5,8,2023-04-15 17:45:35.107,16
+13,Take control of Google,Take control of Microsoft,5,7,2023-04-15 17:45:54.325,17
+16,Adidas,Nike,3,8,2023-04-16 11:59:40.632,18
+17,Waitrose,M&S,5,7,2023-04-16 12:01:18.504,19
+18,Sainsburys,Tesco,6,8,2023-04-16 12:01:51.046,20
+19,Aldi,Lidl,2,9,2023-04-16 12:01:59.329,21
+24,Shower,Bath,5,7,2023-04-16 13:53:47.498,22
+23,Crisps,Chips,5,6,2023-04-16 13:54:10.470,23
+22,McDonalds,Burger King,5,7,2023-04-16 13:54:31.369,24
+21,Only be able to play Minecraft Survival,Only be able to play Minecraft Creative,7,8,2023-04-16 14:12:40.093,25
+25,be a vampire,be a werewolf,2,5,2023-04-16 16:12:52.314,26
+35,Porridge,Granola,2,7,2023-04-16 21:18:08.960,27
+34,Coffee,Tea,3,7,2023-04-16 21:18:23.336,28
+33,Dog,Cat,3,5,2023-04-16 21:18:38.680,29
+32,Hamster,Guinea pig,3,5,2023-04-16 21:19:34.626,30
+30,Surfing,Snowboarding,4,6,2023-04-16 21:23:20.847,31
+31,Coke,Pepsi,4,5,2023-04-16 21:26:23.071,32
+29,Mars bar,Twix,7,10,2023-04-16 21:30:11.931,33
+28,Oreos,Hobnobs,3,6,2023-04-16 21:30:50.783,34
+27,Marmite on toast,Jam on toast,2,5,2023-04-17 07:19:20.921,35
+26,🐈 cat,🐕 dog,2,5,2023-04-19 20:40:20.168,36
+37,have a linux computer,have a windows computer,3,6,2023-04-21 12:26:13.223,37
+36,have only Apple devices,never have any Apple devices,3,7,2023-04-21 12:26:41.397,38
+40,Windsurfing,Sailing,2,4,2023-04-25 07:45:28.704,39
+39,Maths,Further Maths,2,4,2023-04-25 10:55:38.044,40
+38,fx cg-50,classwiz,2,3,2023-04-25 10:56:01.119,41
+47,σ,Σ,2,3,2023-04-28 08:50:10.565,42
+46,New York City,San Francisco,1,3,2023-04-28 16:00:27.562,43
+45,Hollywood,Bollywood,2,3,2023-04-28 16:01:04.154,44
+44,Edinburgh,Glasgow,2,3,2023-04-28 16:01:48.776,45
+43,Bath,Bristol,2,3,2023-04-28 16:01:59.306,46
+42,Croissant,Pain aux chocolat,2,3,2023-04-30 12:33:13.720,47
+48,Wolfram Alpha,Fx CG50,0,0,2023-07-04 11:49:01.750,53
+-1,Ed Sheeran,Stormzy,0,0,2023-07-07 22:19:13.889,55
+49,Ed Sheeran,Stormzy,0,0,2023-07-07 22:22:49.672,56
+-1,Trainers,Boots,0,0,2023-11-19 12:44:44.120,57
+-1,Pasta,Pizza,0,0,2023-11-19 12:45:18.497,59
+-1,Red wine,White wine,0,0,2023-11-19 12:45:35.527,60
+-1,Beer,Cider,0,0,2023-11-19 12:45:45.381,61
